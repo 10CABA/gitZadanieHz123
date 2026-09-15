@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h1>Добавить новую книгу</h1>
+            <div class="form-frame">
+                <label for="titleInput">Название книги</label>
+                <input type="text" id="titleInput" placeholder="Название книги">
+            </div>
+            <div class="form-frame">
+                <label for="authorInput">Автор</label>
+                <input type="text" id="authorInput" placeholder="Автор">
+            </div>
+            <button id="addBookBtn">Добавить книгу</button>
+        </div>
+        
+        <div class="section">
+            <h1>Поиск книг</h1>
+            <div class="form-frame">
+                <input type="text" id="searchInput" placeholder="Введите название книги...">
+            </div>
+            <div class="button-group">
+                <button class="secondary" id="showStatsBtn">Статистика по авторам</button>
+                <button class="secondary" id="filterAvailableBtn">Только доступные</button>
+                <button class="secondary" id="resetFilterBtn">Показать все</button>
+            </div>
+            <div id="searchResult" class="search-result"></div>
+        </div>
+
+        <div class="section">
+            <h1 id="listTitle">Список книг</h1>
+            <ul id="booksList"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
