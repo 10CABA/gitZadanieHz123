@@ -1,28 +1,52 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function TodoList() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'task 1', done: true },
-    { id: 2, title: 'task2', done: false },
-    { id: 3, title: 'task 3', done: false },
-  ]);
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks')
+    if (saved) {
+      return JSON.parse(saved)
+    }
+    return [
+      { id: 1, title: 'task 1', done: true },
+      { id: 2, title: 'task2', done: false },
+      { id: 3, title: 'task 3', done: false },
+    ]
+  });
 
   const [inputValue, setInputValue] = useState('')
+  const [deadlineValue, setDeadlineValue] = useState('')
 
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
+  
   const addTask = (e) => {
     e.preventDefault()
     if (inputValue.trim() === '') return
     const newTask = {
       id: Date.now(),
       title: inputValue,
-      done: false
+      done: false,
+      deadline: deadlineValue
     }
 
     setTasks([...tasks, newTask])
     setInputValue('')
+    setDeadlineValue('')
   }
 
-  
+  const getTaskColor = (task) => {
+    if (task.done || !task.deadline) return 
+    const nowT = new Date
+    const deadline = new Date(task.deadline)
+    const diffTime = deadline - nowT
+
+    if (diffTime<0) return '#ff0000'
+    if (diffTime < 86400000) return '#ffee00'
+    return '#06731d'
+  }
+
   const deleteTask = (id) => {
     const updatedTasks = tasks.filter(task => task.id !== id)
     setTasks(updatedTasks)
@@ -40,15 +64,21 @@ function TodoList() {
   }
 
   return (
-    <div style={{ padding: '20px', textAlign: 'left'}}>
+      <div style={{ padding: '20px', textAlign: 'left' }}>
       <h3>Task list</h3>
 
       <form onSubmit={addTask} style={{ display: 'flex', marginBottom: '20px' }}>
-        <input 
-          type="text" 
-          placeholder="New task..." 
-          value={inputValue} 
+        <input
+          type="text"
+          placeholder="New task..."
+          value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+        />
+
+        <input
+          type="datetime-local"
+          value={deadlineValue}
+          onChange={(e) => setDeadlineValue(e.target.value)}
         />
 
         <button type="submit">Add</button>
@@ -64,7 +94,9 @@ function TodoList() {
               style={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor: getTaskColor(task),
+                padding: '10px'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
